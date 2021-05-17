@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 
 import RotatingCubes from '@/views/RotatingCubes.vue'
 import ResponsiveRotatingCubes from '@/views/ResponsiveRotatingCubes.vue'
+import ResponsiveRotatingCubesHDDPI from '@/views/ResponsiveRotatingCubesHDDPI.vue'
 
 Vue.use(VueRouter)
 
@@ -16,6 +17,11 @@ const routes = [
     path: '/responsive-rotating-cubes',
     name: 'ResponsiveRotatingCubes',
     component: ResponsiveRotatingCubes
+  },
+  {
+    path: '/responsive-rotating-cubes-hd-dpi',
+    name: 'ResponsiveRotatingCubesHDDPI',
+    component: ResponsiveRotatingCubesHDDPI
   },
 ]
 

@@ -3,6 +3,7 @@
     <div id="nav">
       <router-link to="/rotating-cubes">Rotating Cubes</router-link> |
       <router-link to="/responsive-rotating-cubes">Responsive Rotating Cubes</router-link> |
+      <router-link to="/responsive-rotating-cubes-hd-dpi">Responsive Rotating Cubes HD-DPI</router-link> |
     </div>
     <router-view/>
   </div>
