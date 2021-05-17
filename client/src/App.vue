@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/rotating-cube">Rotating Cube</router-link> |
+      <router-link to="/rotating-cubes">Rotating Cubes</router-link> |
+      <router-link to="/responsive-rotating-cubes">Responsive Rotating Cubes</router-link> |
     </div>
     <router-view/>
   </div>

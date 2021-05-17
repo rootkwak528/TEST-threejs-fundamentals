@@ -1,19 +1,18 @@
 <template>
-  <canvas id="c">
+  <canvas id="rc">
   </canvas>
 </template>
 
-<script type="module">
+<script>
 import * as THREE from 'three'
 
 export default {
-  name: 'RotatingCube',
+  name: 'ResponsiveRotatingCubes',
   methods: {
     main () {
-      const canvas = document.querySelector('#c')
+      const canvas = document.querySelector('#rc')
       const renderer = new THREE.WebGLRenderer({ canvas })
 
-      // canvas 크기가 기본 300x150이니, aspect=2로 설정
       const camera = new THREE.PerspectiveCamera( 75, 2, 0.1, 5)
       camera.position.z = 2
 
@@ -40,8 +39,25 @@ export default {
         makeCube( geometry, 0xaa8844, 2 ),
       ]
 
+      function resizeRendererToDisplaySize ( renderer ) {
+        const canvas = renderer.domElement
+        const width = canvas.clientWidth
+        const height = canvas.clientHeight
+        const needResize = canvas.width !== width || canvas.height !== height
+        if (needResize) {
+          renderer.setSize( width, height, false )
+        }
+        return needResize
+      }
+
       function render( time ) {
         time *= 0.001;  // convert time to seconds
+
+        if (resizeRendererToDisplaySize( renderer )) {
+          const canvas = renderer.domElement
+          camera.aspect = canvas.clientWidth / canvas.clientHeight
+          camera.updateProjectionMatrix()
+        }
 
         cubes.forEach((cube, idx) => {
           const speed = 1 + idx * 0.1
@@ -63,5 +79,13 @@ export default {
 </script>
 
 <style>
-
+html, body {
+  margin: 0; /* body는 기본 margin 5px */
+  height: 100%;
+}
+#rc {
+  width: 100%;
+  height: 100%;
+  display: block; /* canvas의 display는 기본 inline */
+}
 </style>

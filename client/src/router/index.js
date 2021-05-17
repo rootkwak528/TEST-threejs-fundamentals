@@ -1,14 +1,21 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import RotatingCube from '@/views/RotatingCube.vue'
+
+import RotatingCubes from '@/views/RotatingCubes.vue'
+import ResponsiveRotatingCubes from '@/views/ResponsiveRotatingCubes.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/rotating-cube',
-    name: 'RotatingCube',
-    component: RotatingCube
+    path: '/rotating-cubes',
+    name: 'RotatingCubes',
+    component: RotatingCubes
+  },
+  {
+    path: '/responsive-rotating-cubes',
+    name: 'ResponsiveRotatingCubes',
+    component: ResponsiveRotatingCubes
   },
 ]
 
