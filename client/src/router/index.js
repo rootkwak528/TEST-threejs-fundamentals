@@ -5,6 +5,7 @@ import RotatingCubes from '@/views/RotatingCubes.vue'
 import ResponsiveRotatingCubes from '@/views/ResponsiveRotatingCubes.vue'
 import ResponsiveRotatingCubesHDDPI from '@/views/ResponsiveRotatingCubesHDDPI.vue'
 import AdjustableCube from '@/views/AdjustableCube.vue'
+import Geometries from '@/views/Geometries.vue'
 
 Vue.use(VueRouter)
 
@@ -28,6 +29,11 @@ const routes = [
     path: '/adjustable-cube',
     name: 'AdjustableCube',
     component: AdjustableCube
+  },
+  {
+    path: '/geometries',
+    name: 'Geometries',
+    component: Geometries
   },
 ]
 
