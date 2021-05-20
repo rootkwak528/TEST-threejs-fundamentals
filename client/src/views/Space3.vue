@@ -145,7 +145,7 @@ export default {
       // CONTROL #3
       controls = new FlyControls( camera, renderer.domElement )
       controls.movementSpeed = 1000
-      controls.rollSpeed = Math.PI / 3
+      controls.rollSpeed = Math.PI / 5
       controls.dragToLook = true
 
       renderer.domElement.addEventListener( 'pointermove', this.onPointerMove );
