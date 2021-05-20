@@ -6,6 +6,9 @@
       <router-link to="/responsive-rotating-cubes-hd-dpi">Responsive Rotating Cubes HD-DPI</router-link> |
       <router-link to="/adjustable-cube">Adjustable Cube</router-link> |
       <router-link to="/geometries">Geometries</router-link> |
+      <router-link to="/space1">Space1</router-link> |
+      <router-link to="/space2">Space2</router-link> |
+      <router-link to="/space3">Space3</router-link> |
     </div>
     <router-view/>
   </div>
