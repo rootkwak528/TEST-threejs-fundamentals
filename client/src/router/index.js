@@ -6,9 +6,10 @@ import ResponsiveRotatingCubes from '@/views/ResponsiveRotatingCubes.vue'
 import ResponsiveRotatingCubesHDDPI from '@/views/ResponsiveRotatingCubesHDDPI.vue'
 import AdjustableCube from '@/views/AdjustableCube.vue'
 import Geometries from '@/views/Geometries.vue'
-import Space1 from '@/views/Space1.vue'
-import Space2 from '@/views/Space2.vue'
-import Space3 from '@/views/Space3.vue'
+import Control1 from '@/views/Control1.vue'
+import Control2 from '@/views/Control2.vue'
+import Control3 from '@/views/Control3.vue'
+import PosterCard from '@/views/PosterCard.vue'
 
 Vue.use(VueRouter)
 
@@ -39,19 +40,24 @@ const routes = [
     component: Geometries
   },
   {
-    path: '/space1',
-    name: 'Space1',
-    component: Space1
+    path: '/control1',
+    name: 'Control1',
+    component: Control1
   },
   {
-    path: '/space2',
-    name: 'Space2',
-    component: Space2
+    path: '/control2',
+    name: 'Control2',
+    component: Control2
   },
   {
-    path: '/space3',
-    name: 'Space3',
-    component: Space3
+    path: '/control3',
+    name: 'Control3',
+    component: Control3
+  },
+  {
+    path: '/poster-card',
+    name: 'PosterCard',
+    component: PosterCard
   },
 ]
 

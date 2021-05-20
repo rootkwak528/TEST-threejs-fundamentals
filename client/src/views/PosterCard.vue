@@ -6,9 +6,7 @@
 
 <script>
 import * as THREE from 'three'
-import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-// import { FlyControls } from 'three/examples/jsm/controls/FlyControls'
+import { FlyControls } from 'three/examples/jsm/controls/FlyControls'
 import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils'
 
 let container
@@ -23,10 +21,10 @@ const pointer = new THREE.Vector2()
 const offset = new THREE.Vector3( 10, 10, 10 )
 
 // Fly Controls
-// const clock = new THREE.Clock()
+const clock = new THREE.Clock()
 
 export default {
-  name: 'Space',
+  name: 'PosterCard',
   methods: {
     main () {
 			this.init()
@@ -63,7 +61,7 @@ export default {
 
       for ( let i = 0; i < 5000; i ++ ) {
 
-        let geometry = new THREE.BoxGeometry();
+        let geometry = this.getGeometry()
 
         const position = new THREE.Vector3();
         position.x = Math.random() * 10000 - 5000;
@@ -76,9 +74,9 @@ export default {
         rotation.z = Math.random() * 2 * Math.PI;
 
         const scale = new THREE.Vector3();
-        scale.x = Math.random() * 200 + 100;
-        scale.y = Math.random() * 200 + 100;
-        scale.z = Math.random() * 200 + 100;
+        scale.x = 100;
+        scale.y = 100;
+        scale.z = 100;
 
         quaternion.setFromEuler( rotation );
         matrix.compose( position, quaternion, scale );
@@ -115,7 +113,7 @@ export default {
       pickingScene.add( new THREE.Mesh( BufferGeometryUtils.mergeBufferGeometries( geometriesPicking ), pickingMaterial ) );
 
       highlightBox = new THREE.Mesh(
-        new THREE.BoxGeometry(),
+        this.getGeometry(),
         new THREE.MeshLambertMaterial( { color: 0xffff00 }
         ) );
       scene.add( highlightBox );
@@ -125,30 +123,34 @@ export default {
       renderer.setSize( window.innerWidth, window.innerHeight );
       container.appendChild( renderer.domElement );
 
-      // CONTROL #1. Trackball (default)
-      controls = new TrackballControls( camera, renderer.domElement );
-      controls.rotateSpeed = 1.0;
-      controls.zoomSpeed = 5;
-      controls.panSpeed = 5;
-      controls.noZoom = false;
-      controls.noPan = false;
-      controls.staticMoving = true;
-      controls.dynamicDampingFactor = 0.5;
-
-      // CONTROL #2. Orbit
-      // controls = new OrbitControls( camera, renderer.domElement );
-			// controls.maxPolarAngle = Math.PI * 0.5;
-			// controls.minDistance = 1;
-			// controls.maxDistance = 100;
-			// controls.addEventListener( 'change', this.render );
-
-      // CONTROL #3
-      // controls = new FlyControls( camera, renderer.domElement )
-      // controls.movementSpeed = 1000
-      // controls.rollSpeed = Math.PI / 3
-      // controls.dragToLook = true
+      controls = new FlyControls( camera, renderer.domElement )
+      controls.movementSpeed = 1000
+      controls.rollSpeed = Math.PI / 5
+      controls.dragToLook = true
 
       renderer.domElement.addEventListener( 'pointermove', this.onPointerMove );
+    },
+
+    getGeometry () {
+      const width = 2, height = 3;
+
+      const shape = new THREE.Shape();
+      shape.moveTo( 0,0 );
+      shape.lineTo( 0, height );
+      shape.lineTo( width, height );
+      shape.lineTo( width, 0 );
+      shape.lineTo( 0, 0 );
+
+      const extrudeSettings = {
+        steps: 1,
+        depth: 0.01,
+        bevelEnabled: true,
+        bevelThickness: 0.03,
+        bevelSize: 0.06,
+        bevelSegments: 1
+      };
+      
+      return new THREE.ExtrudeGeometry(shape, extrudeSettings)
     },
 
     applyVertexColors ( geometry, color ) {
@@ -240,11 +242,8 @@ export default {
 
     render () {
 
-      // Trackball Controls
-      controls.update();
-
       // Fly Controls
-      // controls.update( clock.getDelta() );
+      controls.update( clock.getDelta() );
 
       this.pick();
 

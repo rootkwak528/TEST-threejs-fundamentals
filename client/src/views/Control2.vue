@@ -26,7 +26,7 @@ const offset = new THREE.Vector3( 10, 10, 10 )
 // const clock = new THREE.Clock()
 
 export default {
-  name: 'Space',
+  name: 'Control2',
   methods: {
     main () {
 			this.init()
