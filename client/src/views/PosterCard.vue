@@ -69,9 +69,12 @@ export default {
         position.z = Math.random() * 8000 - 4000;
 
         const rotation = new THREE.Euler();
-        rotation.x = Math.random() * 2 * Math.PI;
-        rotation.y = Math.random() * 2 * Math.PI;
-        rotation.z = Math.random() * 2 * Math.PI;
+        // rotation.x = Math.random() * 2 * Math.PI;
+        // rotation.y = Math.random() * 2 * Math.PI;
+        // rotation.z = Math.random() * 2 * Math.PI;
+        rotation.x = 0;
+        rotation.y = 0;
+        rotation.z = 0;
 
         const scale = new THREE.Vector3();
         scale.x = 100;
@@ -80,6 +83,7 @@ export default {
 
         quaternion.setFromEuler( rotation );
         matrix.compose( position, quaternion, scale );
+        // matrix.compose( position, camera.quaternion, scale );
 
         geometry.applyMatrix4( matrix );
 
@@ -108,7 +112,16 @@ export default {
       }
 
       const objects = new THREE.Mesh( BufferGeometryUtils.mergeBufferGeometries( geometriesDrawn ), defaultMaterial );
+      objects.lookAt( camera.position )
       scene.add( objects );
+
+      // geometriesDrawn.forEach(geometryDrawn => {
+      //   const mesh = new THREE.Mesh( geometryDrawn, defaultMaterial )
+      //   mesh.onBeforeRender( () => {
+      //     mesh.lookAt( camera.position )
+      //   })
+      //   scene.add( mesh )
+      // })
 
       pickingScene.add( new THREE.Mesh( BufferGeometryUtils.mergeBufferGeometries( geometriesPicking ), pickingMaterial ) );
 
