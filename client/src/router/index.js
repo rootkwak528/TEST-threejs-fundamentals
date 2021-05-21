@@ -11,8 +11,10 @@ import Control1 from '@/views/Control1.vue'
 import Control2 from '@/views/Control2.vue'
 import Control3 from '@/views/Control3.vue'
 import PosterCard from '@/views/PosterCard.vue'
+import PosterCardMipmap from '@/views/PosterCardMipmap.vue'
 import TextureCube from '@/views/TextureCube.vue'
 import TextureCard from '@/views/TextureCard.vue'
+// import ImageMipmaps from '@/views/ImageMipmaps.vue'
 
 Vue.use(VueRouter)
 
@@ -68,6 +70,11 @@ const routes = [
     component: PosterCard
   },
   {
+    path: '/poster-card-mipmap',
+    name: 'PosterCardMipmap',
+    component: PosterCardMipmap
+  },
+  {
     path: '/texture-cube',
     name: 'TextureCube',
     component: TextureCube
@@ -77,6 +84,11 @@ const routes = [
     name: 'TextureCard',
     component: TextureCard
   },
+  // {
+  //   path: '/image-mipmaps',
+  //   name: 'ImageMipmaps',
+  //   component: ImageMipmaps
+  // },
 ]
 
 const router = new VueRouter({

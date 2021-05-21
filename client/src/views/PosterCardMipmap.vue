@@ -133,11 +133,12 @@ export default {
       // Scene 의 재질 - texture image 적용
       const loadManager = new THREE.LoadingManager();
       const loader = new THREE.TextureLoader(loadManager);
-      const posterMaterial = new THREE.MeshBasicMaterial({
+      const posterTexture = loader.load('https://www.themoviedb.org/t/p/w500/v0nlHB0wDevL54Me9V9lB6QdPk2.jpg')
+      const posterMaterial = new THREE.MeshBasicMaterial({ map: posterTexture })
 
-        map: loader.load('https://www.themoviedb.org/t/p/w500/v0nlHB0wDevL54Me9V9lB6QdPk2.jpg'),
+      posterTexture.minFilter = THREE.LinearMipMapLinearFilter
+      posterTexture.magFilter = THREE.LinearFilter
 
-        })
       // const plainMaterial = new THREE.MeshPhongMaterial({
 
       //   color: 0xaaaaaa, 

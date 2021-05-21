@@ -11,8 +11,10 @@
       <router-link to="/control2">Control2</router-link> |
       <router-link to="/control3">Control3</router-link> |
       <router-link to="/poster-card">PosterCard</router-link> |
+      <router-link to="/poster-card-mipmap">PosterCardMipmap</router-link> |
       <router-link to="/texture-cube">TextureCube</router-link> |
       <router-link to="/texture-card">TextureCard</router-link> |
+      <!-- <router-link to="/image-mipmaps">ImageMipmaps</router-link> | -->
     </div>
     <router-view/>
   </div>
