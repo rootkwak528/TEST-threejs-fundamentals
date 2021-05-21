@@ -9,6 +9,12 @@ import * as THREE from 'three'
 import { FlyControls } from 'three/examples/jsm/controls/FlyControls'
 import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils'
 
+import results from '@/data/movies'
+import axios from 'axios'
+
+const TMDB_API_KEY = process.env.VUE_APP_TMDB_API_KEY
+console.log(TMDB_API_KEY)
+
 let container
 let camera, controls, scene, renderer
 let pickingTexture, pickingScene
@@ -76,12 +82,7 @@ export default {
       scene.add( light );
 
       // 영화 데이터 확인
-      const movies = []
-      for ( let i=0; i < 50; i++ ) {
-        movies[i] = {
-          id: i
-        }
-      }
+      const movies = results.results
 
       // 포스터 카드 geometry 추가
       this.updateGeometriesToScene( movies )
@@ -119,128 +120,112 @@ export default {
 
       // pickingScene 의 재질
       const pickingMaterial = new THREE.MeshBasicMaterial( { vertexColors: true } );
+      // const posterMaterials = []
 
-      // Scene 의 재질
-      // const defaultMaterial = new THREE.MeshPhongMaterial( { 
+      // geometry 배열
+      // const geometriesDrawn = [];
+      const geometriesPicking = [];
 
-      //   color: 0xffffff, 
-      //   flatShading: true, 
-      //   vertexColors: true, 
-      //   shininess: 0	
-        
-      //   } );
+      // 그외 변수
+      const matrix = new THREE.Matrix4();
+      const quaternion = new THREE.Quaternion();
+      const color = new THREE.Color();
 
-      // Scene 의 재질 - texture image 적용
-      const loadManager = new THREE.LoadingManager();
-      const loader = new THREE.TextureLoader(loadManager);
-      const posterTexture = loader.load('https://www.themoviedb.org/t/p/w500/v0nlHB0wDevL54Me9V9lB6QdPk2.jpg')
-      const posterMaterial = new THREE.MeshBasicMaterial({ map: posterTexture })
+      movies.forEach(movie => {
 
-      posterTexture.minFilter = THREE.LinearMipMapLinearFilter
-      posterTexture.magFilter = THREE.LinearFilter
+        if (!movie.poster_path) {
+          return
+        }
 
-      // const plainMaterial = new THREE.MeshPhongMaterial({
-
-      //   color: 0xaaaaaa, 
-      //   flatShading: true, 
-      //   vertexColors: true, 
-      //   shininess: 0,
-        
-      //   })
-
-      // const materials = [
-      //   plainMaterial,
-      //   plainMaterial,
-      //   plainMaterial,
-      //   plainMaterial,
-      //   posterMaterial,
-      //   posterMaterial,
-      // ];
-
-      loadManager.onLoad = () => {
-        
-        // geometry 배열
-        const geometriesDrawn = [];
-        const geometriesPicking = [];
-
-        // 그외 변수
-        const matrix = new THREE.Matrix4();
-        const quaternion = new THREE.Quaternion();
-        const color = new THREE.Color();
-
-        movies.forEach(movie => {
+        if (pickingData[ movie.id ]) {
+          return
+        }
           
-          // geometry 원형
-          let geometry = this.getCubeGeometry()
+        // geometry 원형
+        let geometry = this.getCubeGeometry()
 
-          // 위치 설정
-          const position = new THREE.Vector3();
-          position.x = Math.random() * 10000 - 5000;
-          position.y = Math.random() * 6000 - 3000;
-          position.z = Math.random() * 8000 - 4000;
+        // Scene 의 재질에 texture image 적용할 TextureLoader
+        const loadManager = new THREE.LoadingManager();
+        const loader = new THREE.TextureLoader(loadManager);
 
-          // 방향 설정
-          const rotation = new THREE.Euler();
-          rotation.x = 0;
-          rotation.y = 0;
-          rotation.z = 0;
+        const posterTexture = loader.load(`https://www.themoviedb.org/t/p/w500${movie.poster_path}`)
+        const posterMaterial = new THREE.MeshBasicMaterial({ map: posterTexture })
 
-          // 스케일 설정
-          const scale = new THREE.Vector3();
-          scale.x = 100;
-          scale.y = 100;
-          scale.z = 100;
+        posterTexture.minFilter = THREE.LinearMipMapLinearFilter
+        posterTexture.magFilter = THREE.LinearFilter
+        
+        // 위치 설정
+        const position = new THREE.Vector3();
+        position.x = Math.random() * 10000 - 5000;
+        position.y = Math.random() * 6000 - 3000;
+        position.z = Math.random() * 8000 - 4000;
 
-          // 위치, 방향, 스케일 적용
-          quaternion.setFromEuler( rotation );
-          matrix.compose( position, quaternion, scale );
-          geometry.applyMatrix4( matrix );
+        // 방향 설정
+        const rotation = new THREE.Euler();
+        rotation.x = 0;
+        rotation.y = 0;
+        rotation.z = 0;
 
-          // case: 카드가 카메라 바라보게 하려면
-          // matrix.compose( position, camera.quaternion, scale );
+        // 스케일 설정
+        const scale = new THREE.Vector3();
+        scale.x = 100;
+        scale.y = 100;
+        scale.z = 100;
 
-          // 컬러 적용
-          // this.applyVertexColors( geometry, color.setHex( Math.random() * 0xffffff ) );
+        // 위치, 방향, 스케일 적용
+        quaternion.setFromEuler( rotation );
+        matrix.compose( position, quaternion, scale );
+        geometry.applyMatrix4( matrix );
 
-          // geometry를 geometry 배열에 추가
-          geometriesDrawn.push( geometry );
+        // case: 카드가 카메라 바라보게 하려면
+        // matrix.compose( position, camera.quaternion, scale );
 
-          // geometry를 마우스 가리키는 씬에 사용할 geometry 배열에 추가
-          // 단, 컬러를 "id" (movie.id) 값으로 설정한다.
-          geometry = geometry.clone();
-          this.applyVertexColors( geometry, color.setHex( movie.id ) );
-          geometriesPicking.push( geometry );
+        // 컬러 적용
+        // this.applyVertexColors( geometry, color.setHex( Math.random() * 0xffffff ) );
 
-          // 각 카드 별 데이터 저장
-          pickingData[ movie.id ] = {
+        // geometry를 geometry 배열에 추가
+        // geometriesDrawn.push( geometry );
 
-            position: position,
-            rotation: rotation,
-            scale: scale,
+        // geometry를 마우스 가리키는 씬에 사용할 geometry 배열에 추가
+        // 단, 컬러를 "id" (movie.id) 값으로 설정한다.
+        geometry = geometry.clone();
+        this.applyVertexColors( geometry, color.setHex( movie.id ) );
+        geometriesPicking.push( geometry );
 
-          };
+        // 각 카드 별 데이터 저장
+        pickingData[ movie.id ] = {
 
-        });
+          position: position,
+          rotation: rotation,
+          scale: scale,
+        };
 
-        // Scene에 포스터 카드 추가
-        const objects = new THREE.Mesh( 
+        loadManager.onLoad = () => {
 
-          BufferGeometryUtils.mergeBufferGeometries( geometriesDrawn ), 
-          posterMaterial 
-
-          );
-        scene.add( objects );
-
-        // 포인터 바라보는 Scene에도 포스터 카드 추가
-        const pickingObejcts = new THREE.Mesh( 
-
-          BufferGeometryUtils.mergeBufferGeometries( geometriesPicking ),
-          pickingMaterial 
+          // posterMaterials.push( posterMaterial )
           
-          )
-        pickingScene.add( pickingObejcts )
+          // Scene에 포스터 카드 추가
+          const object = new THREE.Mesh( 
 
-      };
+            // BufferGeometryUtils.mergeBufferGeometries( geometriesDrawn ), 
+            geometry,
+            posterMaterial,
+
+            );
+          scene.add( object );
+
+        };
+        
+      }) // forEach end
+
+      // 포인터 바라보는 Scene에도 포스터 카드 추가
+      const pickingObejcts = new THREE.Mesh( 
+
+        BufferGeometryUtils.mergeBufferGeometries( geometriesPicking ),
+        pickingMaterial
+        
+        )
+      pickingScene.add( pickingObejcts )
 
     },
 
@@ -397,6 +382,7 @@ export default {
           if ( shiftDown ) {
 
             console.log( 'shift +', pointedCardId )
+            this.getRecommendations()
 
           } else {
 
@@ -404,19 +390,39 @@ export default {
 
           }
 
-          const movies = []
-          for ( let i=0; i < 50; i++ ) {
-            movies[i] = {
-              id: Math.floor(Math.random() * 100000)
-            }
-          }
-          this.updateGeometriesToScene( movies )
-
         }
         
         clicked = false
 
       }
+
+    },
+
+    getRecommendations () {
+
+      axios({
+
+        url: `https://api.themoviedb.org/3/movie/${pointedCardId}/recommendations?api_key=${TMDB_API_KEY}&language=ko-KR&page=1`,
+        method: 'get',
+
+      })
+
+        .then( res => {
+
+          if (res.data.results) {
+
+            const movies = res.data.results
+            this.updateGeometriesToScene( movies )
+
+          }
+          
+        })
+
+        .catch( err => {
+
+          console.log(err)
+
+        })
 
     },
 
