@@ -89,7 +89,7 @@ export default {
       // 포인터 가르키는 박스에 씌울 하이라이트 박스도 Scene에 추가
       highlightBox = new THREE.Mesh(
 
-        this.getCardGeometry(),
+        this.getCubeGeometry(),
         new THREE.MeshLambertMaterial( { color: 0xffff00 }
 
         ) );
@@ -117,101 +117,139 @@ export default {
 
     updateGeometriesToScene ( movies ) {
 
-      // 텍스처
-      const texture = loader.load('https://www.themoviedb.org/t/p/w1280/v0nlHB0wDevL54Me9V9lB6QdPk2.jpg') // 비동기 메소드임
-      console.log(texture)
-
-      // 재질
+      // pickingScene 의 재질
       const pickingMaterial = new THREE.MeshBasicMaterial( { vertexColors: true } );
-      const defaultMaterial = new THREE.MeshPhongMaterial( { 
 
-        color: 0xffffff, 
+      // Scene 의 재질
+      // const defaultMaterial = new THREE.MeshPhongMaterial( { 
+
+      //   color: 0xffffff, 
+      //   flatShading: true, 
+      //   vertexColors: true, 
+      //   shininess: 0	
+        
+      //   } );
+
+      // Scene 의 재질 - texture image 적용
+      const loadManager = new THREE.LoadingManager();
+      const loader = new THREE.TextureLoader(loadManager);
+      const posterImg = new THREE.MeshBasicMaterial({
+
+        map: loader.load('https://www.themoviedb.org/t/p/w500/v0nlHB0wDevL54Me9V9lB6QdPk2.jpg'),
+
+        })
+      const plainMaterial = new THREE.MeshPhongMaterial({
+
+        color: 0xaaaaaa, 
         flatShading: true, 
         vertexColors: true, 
-        shininess: 0	
+        shininess: 0,
         
-        } );
+        })
 
-      // geometry 배열
-      const geometriesDrawn = [];
-      const geometriesPicking = [];
+      const materials = [
+        plainMaterial,
+        plainMaterial,
+        plainMaterial,
+        plainMaterial,
+        posterImg,
+        posterImg,
+      ];
 
-      // 그외 변수
-      const matrix = new THREE.Matrix4();
-      const quaternion = new THREE.Quaternion();
-      const color = new THREE.Color();
-
-      movies.forEach(movie => {
+      loadManager.onLoad = () => {
         
-        // geometry 원형
-        let geometry = this.getCardGeometry()
+        // geometry 배열
+        const geometriesDrawn = [];
+        const geometriesPicking = [];
 
-        // 위치 설정
-        const position = new THREE.Vector3();
-        position.x = Math.random() * 10000 - 5000;
-        position.y = Math.random() * 6000 - 3000;
-        position.z = Math.random() * 8000 - 4000;
+        // 그외 변수
+        const matrix = new THREE.Matrix4();
+        const quaternion = new THREE.Quaternion();
+        const color = new THREE.Color();
 
-        // 방향 설정
-        const rotation = new THREE.Euler();
-        rotation.x = 0;
-        rotation.y = 0;
-        rotation.z = 0;
+        movies.forEach(movie => {
+          
+          // geometry 원형
+          let geometry = this.getCubeGeometry()
 
-        // 스케일 설정
-        const scale = new THREE.Vector3();
-        scale.x = 100;
-        scale.y = 100;
-        scale.z = 100;
+          // 위치 설정
+          const position = new THREE.Vector3();
+          position.x = Math.random() * 10000 - 5000;
+          position.y = Math.random() * 6000 - 3000;
+          position.z = Math.random() * 8000 - 4000;
 
-        // 위치, 방향, 스케일 적용
-        quaternion.setFromEuler( rotation );
-        matrix.compose( position, quaternion, scale );
-        geometry.applyMatrix4( matrix );
+          // 방향 설정
+          const rotation = new THREE.Euler();
+          rotation.x = 0;
+          rotation.y = 0;
+          rotation.z = 0;
 
-        // case: 카드가 카메라 바라보게 하려면
-        // matrix.compose( position, camera.quaternion, scale );
+          // 스케일 설정
+          const scale = new THREE.Vector3();
+          scale.x = 100;
+          scale.y = 100;
+          scale.z = 100;
 
-        // 컬러 적용
-        this.applyVertexColors( geometry, color.setHex( Math.random() * 0xffffff ) );
+          // 위치, 방향, 스케일 적용
+          quaternion.setFromEuler( rotation );
+          matrix.compose( position, quaternion, scale );
+          geometry.applyMatrix4( matrix );
 
-        // geometry를 geometry 배열에 추가
-        geometriesDrawn.push( geometry );
+          // case: 카드가 카메라 바라보게 하려면
+          // matrix.compose( position, camera.quaternion, scale );
 
-        // geometry를 마우스 가리키는 씬에 사용할 geometry 배열에 추가
-        // 단, 컬러를 "id" (movie.id) 값으로 설정한다.
-        geometry = geometry.clone();
-        this.applyVertexColors( geometry, color.setHex( movie.id ) );
-        geometriesPicking.push( geometry );
+          // 컬러 적용
+          // this.applyVertexColors( geometry, color.setHex( Math.random() * 0xffffff ) );
 
-        // 각 카드 별 데이터 저장
-        pickingData[ movie.id ] = {
+          // geometry를 geometry 배열에 추가
+          geometriesDrawn.push( geometry );
 
-          position: position,
-          rotation: rotation,
-          scale: scale,
+          // geometry를 마우스 가리키는 씬에 사용할 geometry 배열에 추가
+          // 단, 컬러를 "id" (movie.id) 값으로 설정한다.
+          geometry = geometry.clone();
+          this.applyVertexColors( geometry, color.setHex( movie.id ) );
+          geometriesPicking.push( geometry );
 
-        };
+          // 각 카드 별 데이터 저장
+          pickingData[ movie.id ] = {
 
-      });
+            position: position,
+            rotation: rotation,
+            scale: scale,
 
-      // Scene에 포스터 카드 추가
-      const objects = new THREE.Mesh( 
+          };
 
-        BufferGeometryUtils.mergeBufferGeometries( geometriesDrawn ), 
-        defaultMaterial 
+        });
 
-        );
-      scene.add( objects );
+        // Scene에 포스터 카드 추가
+        const objects = new THREE.Mesh( 
 
-      // 포인터 바라보는 Scene에도 포스터 카드 추가
-      const pickingObejcts = new THREE.Mesh( 
+          BufferGeometryUtils.mergeBufferGeometries( geometriesDrawn ), 
+          posterImg 
 
-        BufferGeometryUtils.mergeBufferGeometries( geometriesPicking ),
-        pickingMaterial 
-        
-        )
-      pickingScene.add( pickingObejcts )
+          );
+        scene.add( objects );
+
+        // 포인터 바라보는 Scene에도 포스터 카드 추가
+        const pickingObejcts = new THREE.Mesh( 
+
+          BufferGeometryUtils.mergeBufferGeometries( geometriesPicking ),
+          pickingMaterial 
+          
+          )
+        pickingScene.add( pickingObejcts )
+
+      };
+
+    },
+
+    getCubeGeometry () {
+
+      const boxWidth = 2;
+      const boxHeight = 3;
+      const boxDepth = 0.02;
+
+      return new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
 
     },
 
