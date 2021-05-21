@@ -7,7 +7,7 @@
 import * as THREE from 'three'
 
 export default {
-  name: 'ResponsiveRotatingCubesHDDPI1',
+  name: 'ResponsiveRotatingCubesHDDPI2',
   methods: {
     main () {
       const canvas = document.querySelector('#rc')
@@ -41,13 +41,15 @@ export default {
 
       function resizeRendererToDisplaySize ( renderer ) {
         const canvas = renderer.domElement
-        // const width = canvas.clientWidth
-        // const height = canvas.clientHeight
+        const width = canvas.clientWidth
+        const height = canvas.clientHeight
+
+        renderer.setPixelRatio( window.devicePixelRatio );
         
         // HD-DPI 기기 최적화 (스마트폰)
-        const pixelRatio = window.devicePixelRatio
-        const width = canvas.clientWidth * pixelRatio | 0
-        const height = canvas.clientHeight * pixelRatio | 0
+        // const pixelRatio = window.devicePixelRatio
+        // const width = canvas.clientWidth * pixelRatio | 0
+        // const height = canvas.clientHeight * pixelRatio | 0
 
         const needResize = canvas.width !== width || canvas.height !== height
         if (needResize) {
