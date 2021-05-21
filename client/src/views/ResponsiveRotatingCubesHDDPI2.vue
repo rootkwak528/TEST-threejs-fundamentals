@@ -44,12 +44,13 @@ export default {
         const width = canvas.clientWidth
         const height = canvas.clientHeight
 
-        renderer.setPixelRatio( window.devicePixelRatio );
-        
-        // HD-DPI 기기 최적화 (스마트폰)
+        // HD-DPI 기기 최적화 (스마트폰) 방법 1
         // const pixelRatio = window.devicePixelRatio
         // const width = canvas.clientWidth * pixelRatio | 0
         // const height = canvas.clientHeight * pixelRatio | 0
+
+        // HD-DPI 기기 최적화 (스마트폰) 방법 2
+        renderer.setPixelRatio( window.devicePixelRatio );
 
         const needResize = canvas.width !== width || canvas.height !== height
         if (needResize) {
