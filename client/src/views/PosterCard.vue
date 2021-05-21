@@ -10,7 +10,7 @@ import { FlyControls } from 'three/examples/jsm/controls/FlyControls'
 import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils'
 
 let container
-let camera, controls, scene, renderer
+let camera, controls, scene, renderer, loader
 let pickingTexture, pickingScene
 let highlightBox
 let navbarHeight
@@ -64,6 +64,9 @@ export default {
       pickingScene = new THREE.Scene();
       pickingTexture = new THREE.WebGLRenderTarget( 1, 1 );
 
+      // 재질 로더
+      loader = new THREE.TextureLoader()
+
       // 조명 1
       scene.add( new THREE.AmbientLight( 0x555555 ) );
 
@@ -113,6 +116,10 @@ export default {
     },
 
     updateGeometriesToScene ( movies ) {
+
+      // 텍스처
+      const texture = loader.load('https://www.themoviedb.org/t/p/w1280/v0nlHB0wDevL54Me9V9lB6QdPk2.jpg') // 비동기 메소드임
+      console.log(texture)
 
       // 재질
       const pickingMaterial = new THREE.MeshBasicMaterial( { vertexColors: true } );

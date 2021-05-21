@@ -11,6 +11,8 @@ import Control1 from '@/views/Control1.vue'
 import Control2 from '@/views/Control2.vue'
 import Control3 from '@/views/Control3.vue'
 import PosterCard from '@/views/PosterCard.vue'
+import TextureCube from '@/views/TextureCube.vue'
+import TextureCard from '@/views/TextureCard.vue'
 
 Vue.use(VueRouter)
 
@@ -64,6 +66,16 @@ const routes = [
     path: '/poster-card',
     name: 'PosterCard',
     component: PosterCard
+  },
+  {
+    path: '/texture-cube',
+    name: 'TextureCube',
+    component: TextureCube
+  },
+  {
+    path: '/texture-card',
+    name: 'TextureCard',
+    component: TextureCard
   },
 ]
 
