@@ -58,8 +58,42 @@ export default {
 
       container = document.getElementById( 'container' );
 
-      // 씬
-      this.initScene()
+      // // 씬
+      // this.initScene()
+
+      // 씬 초기화
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color( 0xffffff );
+
+      // 마우스 가리키는 씬
+      pickingScene = new THREE.Scene();
+      pickingTexture = new THREE.WebGLRenderTarget( 1, 1 );
+
+      // 재질 로더
+      // loader = new THREE.TextureLoader()
+
+      // 조명 1
+      scene.add( new THREE.AmbientLight( 0x555555 ) );
+
+      // 조명 2
+      const light = new THREE.SpotLight( 0xffffff, 1.5 );
+      light.position.set( 0, 500, 2000 );
+      scene.add( light );
+
+      // 영화 데이터 확인
+      const movies = results.results
+
+      // 포스터 카드 geometry 추가
+      this.updateGeometriesToScene( movies )
+
+      // 포인터 가르키는 박스에 씌울 하이라이트 박스도 Scene에 추가
+      highlightBox = new THREE.Mesh(
+
+        this.getHighlightGeometry(),
+        new THREE.MeshBasicMaterial( { color: 0xffff00 }
+
+        ) );
+      scene.add( highlightBox );
 
       // 카메라
       camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
@@ -85,65 +119,65 @@ export default {
 
     },
 
-    initScene () {
+    // initScene () {
 
-      const sceneJson = localStorage.getItem( 'scene' )
-      if ( sceneJson ) {
+    //   const sceneJson = localStorage.getItem( 'scene' )
+    //   if ( sceneJson ) {
 
-        const loadedScene = JSON.parse( sceneJson )
-        const objectLoader = new THREE.ObjectLoader()
+    //     const loadedScene = JSON.parse( sceneJson )
+    //     const objectLoader = new THREE.ObjectLoader()
 
-        scene = objectLoader.parse( loadedScene )
+    //     scene = objectLoader.parse( loadedScene )
 
-      } else {
+    //   } else {
 
-        // 씬 초기화
-        scene = new THREE.Scene();
-        scene.background = new THREE.Color( 0xffffff );
+    //     // 씬 초기화
+    //     scene = new THREE.Scene();
+    //     scene.background = new THREE.Color( 0xffffff );
 
-        // 마우스 가리키는 씬
-        pickingScene = new THREE.Scene();
-        pickingTexture = new THREE.WebGLRenderTarget( 1, 1 );
+    //     // 마우스 가리키는 씬
+    //     pickingScene = new THREE.Scene();
+    //     pickingTexture = new THREE.WebGLRenderTarget( 1, 1 );
 
-        // 재질 로더
-        // loader = new THREE.TextureLoader()
+    //     // 재질 로더
+    //     // loader = new THREE.TextureLoader()
 
-        // 조명 1
-        scene.add( new THREE.AmbientLight( 0x555555 ) );
+    //     // 조명 1
+    //     scene.add( new THREE.AmbientLight( 0x555555 ) );
 
-        // 조명 2
-        const light = new THREE.SpotLight( 0xffffff, 1.5 );
-        light.position.set( 0, 500, 2000 );
-        scene.add( light );
+    //     // 조명 2
+    //     const light = new THREE.SpotLight( 0xffffff, 1.5 );
+    //     light.position.set( 0, 500, 2000 );
+    //     scene.add( light );
 
-        // 영화 데이터 확인
-        const movies = results.results
+    //     // 영화 데이터 확인
+    //     const movies = results.results
 
-        // 포스터 카드 geometry 추가
-        this.updateGeometriesToScene( movies )
+    //     // 포스터 카드 geometry 추가
+    //     this.updateGeometriesToScene( movies )
 
-        // 포인터 가르키는 박스에 씌울 하이라이트 박스도 Scene에 추가
-        highlightBox = new THREE.Mesh(
+    //     // 포인터 가르키는 박스에 씌울 하이라이트 박스도 Scene에 추가
+    //     highlightBox = new THREE.Mesh(
 
-          this.getHighlightGeometry(),
-          new THREE.MeshBasicMaterial( { color: 0xffff00 }
+    //       this.getHighlightGeometry(),
+    //       new THREE.MeshBasicMaterial( { color: 0xffff00 }
 
-          ) );
-        scene.add( highlightBox );
+    //       ) );
+    //     scene.add( highlightBox );
         
-      }
+    //   }
 
-    },
+    // },
 
-    exportScene () {
+    // exportScene () {
       
-      const sceneJson = JSON.stringify( scene.toJSON() )
-      console.log(sceneJson.length)
-      localStorage.clear()
-      localStorage.setItem( 'scene', sceneJson )
-      localStorage.setItem( 'test', JSON.stringify( 'test' ) )
+    //   const sceneJson = JSON.stringify( scene.toJSON() )
+    //   console.log(sceneJson.length)
+    //   localStorage.clear()
+    //   localStorage.setItem( 'scene', sceneJson )
+    //   localStorage.setItem( 'test', JSON.stringify( 'test' ) )
 
-    },
+    // },
 
     updateGeometriesToScene ( movies ) {
 
