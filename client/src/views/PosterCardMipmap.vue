@@ -58,43 +58,12 @@ export default {
 
       container = document.getElementById( 'container' );
 
+      // 씬
+      this.initScene()
+
       // 카메라
       camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
       camera.position.z = 1000;
-
-      // 씬
-      scene = new THREE.Scene();
-      scene.background = new THREE.Color( 0xffffff );
-
-      // 마우스 가리키는 씬
-      pickingScene = new THREE.Scene();
-      pickingTexture = new THREE.WebGLRenderTarget( 1, 1 );
-
-      // 재질 로더
-      // loader = new THREE.TextureLoader()
-
-      // 조명 1
-      scene.add( new THREE.AmbientLight( 0x555555 ) );
-
-      // 조명 2
-      const light = new THREE.SpotLight( 0xffffff, 1.5 );
-      light.position.set( 0, 500, 2000 );
-      scene.add( light );
-
-      // 영화 데이터 확인
-      const movies = results.results
-
-      // 포스터 카드 geometry 추가
-      this.updateGeometriesToScene( movies )
-
-      // 포인터 가르키는 박스에 씌울 하이라이트 박스도 Scene에 추가
-      highlightBox = new THREE.Mesh(
-
-        this.getHighlightGeometry(),
-        new THREE.MeshBasicMaterial( { color: 0xffff00 }
-
-        ) );
-      scene.add( highlightBox );
 
       // 렌더러 화면에 추가
       renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -113,6 +82,66 @@ export default {
       renderer.domElement.addEventListener( 'pointerdown', this.onPointerDown ) // 마우스 클릭
       document.addEventListener( 'keydown', this.onKeyDown ) // 키보드 down
       document.addEventListener( 'keyup', this.onKeyUp ) // 키보드 up
+
+    },
+
+    initScene () {
+
+      const sceneJson = localStorage.getItem( 'scene' )
+      if ( sceneJson ) {
+
+        const loadedScene = JSON.parse( sceneJson )
+        const objectLoader = new THREE.ObjectLoader()
+
+        scene = objectLoader.parse( loadedScene )
+
+      } else {
+
+        // 씬 초기화
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color( 0xffffff );
+
+        // 마우스 가리키는 씬
+        pickingScene = new THREE.Scene();
+        pickingTexture = new THREE.WebGLRenderTarget( 1, 1 );
+
+        // 재질 로더
+        // loader = new THREE.TextureLoader()
+
+        // 조명 1
+        scene.add( new THREE.AmbientLight( 0x555555 ) );
+
+        // 조명 2
+        const light = new THREE.SpotLight( 0xffffff, 1.5 );
+        light.position.set( 0, 500, 2000 );
+        scene.add( light );
+
+        // 영화 데이터 확인
+        const movies = results.results
+
+        // 포스터 카드 geometry 추가
+        this.updateGeometriesToScene( movies )
+
+        // 포인터 가르키는 박스에 씌울 하이라이트 박스도 Scene에 추가
+        highlightBox = new THREE.Mesh(
+
+          this.getHighlightGeometry(),
+          new THREE.MeshBasicMaterial( { color: 0xffff00 }
+
+          ) );
+        scene.add( highlightBox );
+        
+      }
+
+    },
+
+    exportScene () {
+      
+      const sceneJson = JSON.stringify( scene.toJSON() )
+      console.log(sceneJson.length)
+      localStorage.clear()
+      localStorage.setItem( 'scene', sceneJson )
+      localStorage.setItem( 'test', JSON.stringify( 'test' ) )
 
     },
 
@@ -390,12 +419,13 @@ export default {
 
           if ( shiftDown ) {
 
-            console.log( 'shift +', pointedCardId )
+            // console.log( 'shift +', pointedCardId )
             this.getRecommendations()
 
           } else {
 
-            console.log( pointedCardId )
+            // console.log( pointedCardId )
+            this.exportScene() // 굉장히 비싼 작업
 
           }
 
