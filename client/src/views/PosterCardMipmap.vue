@@ -91,7 +91,7 @@ export default {
       highlightBox = new THREE.Mesh(
 
         this.getHighlightGeometry(),
-        new THREE.MeshLambertMaterial( { color: 0xffff00 }
+        new THREE.MeshBasicMaterial( { color: 0xffff00 }
 
         ) );
       scene.add( highlightBox );
