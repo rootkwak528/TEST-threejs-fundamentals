@@ -1,10 +1,16 @@
 <template>
   <div id="container">
-
+    <div v-if="isDetail">
+      <Detail
+        @close-detail="closeDetail"
+      />
+    </div>
   </div>
 </template>
 
 <script>
+import Detail from '@/components/Detail'
+
 import * as THREE from 'three'
 import { FlyControls } from 'three/examples/jsm/controls/FlyControls'
 import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils'
@@ -35,6 +41,14 @@ const clock = new THREE.Clock()
 
 export default {
   name: 'PosterCard',
+  data () {
+    return {
+      isDetail: false,
+    }
+  },
+  components: {
+    Detail,
+  },
   mounted () {
 
     const navbar = document.getElementById( 'nav' )
@@ -104,17 +118,8 @@ export default {
       renderer.setSize( window.innerWidth, window.innerHeight );
       container.appendChild( renderer.domElement );
 
-      // 컨트롤러 추가
-      controls = new FlyControls( camera, renderer.domElement )
-      controls.movementSpeed = 1000
-      controls.rollSpeed = Math.PI / 5
-      controls.dragToLook = true
-
-      // 이벤트리스너 추가
-      renderer.domElement.addEventListener( 'pointermove', this.onPointerMove ) // 마우스 이동
-      renderer.domElement.addEventListener( 'pointerdown', this.onPointerDown ) // 마우스 클릭
-      document.addEventListener( 'keydown', this.onKeyDown ) // 키보드 down
-      document.addEventListener( 'keyup', this.onKeyUp ) // 키보드 up
+      // 이벤트리스너 & 컨트롤러 추가
+      this.activateEventsAndControls()
 
     },
 
@@ -353,6 +358,37 @@ export default {
 
     },
 
+    activateEventsAndControls () {
+
+      // 이벤트리스너 추가
+      renderer.domElement.addEventListener( 'pointermove', this.onPointerMove ) // 마우스 이동
+      renderer.domElement.addEventListener( 'pointerdown', this.onPointerDown ) // 마우스 클릭
+      document.addEventListener( 'keydown', this.onKeyDown ) // 키보드 down
+      document.addEventListener( 'keyup', this.onKeyUp ) // 키보드 up
+
+      // 컨트롤러 추가
+      controls = new FlyControls( camera, renderer.domElement )
+      controls.movementSpeed = 1000
+      controls.rollSpeed = Math.PI / 5
+      controls.dragToLook = true
+
+    },
+
+    deactivateEventsAndControls () {
+
+      // 이벤트리스너 제거
+      renderer.domElement.removeEventListener( 'pointermove', this.onPointerMove ) // 마우스 이동
+      renderer.domElement.removeEventListener( 'pointerdown', this.onPointerDown ) // 마우스 클릭
+      document.removeEventListener( 'keydown', this.onKeyDown ) // 키보드 down
+      document.removeEventListener( 'keyup', this.onKeyUp ) // 키보드 up 
+
+      // 컨트롤러 비활성화
+      controls.rollSpeed = 0.02
+      controls.movementSpeed = 0
+      controls.dragToLook = false
+      
+    },
+
     onPointerMove ( e ) {
 
       pointer.x = e.clientX;
@@ -448,6 +484,8 @@ export default {
 
       if ( clicked ) {
 
+      controls.dragToLook = true
+
         if ( pointedCardId ) {
 
           if ( shiftDown ) {
@@ -459,6 +497,9 @@ export default {
 
             console.log( pointedCardId )
             // this.exportScene() // 굉장히 비싼 작업
+
+            this.isDetail = true
+            this.deactivateEventsAndControls()
 
           }
 
@@ -508,6 +549,13 @@ export default {
 
       renderer.setRenderTarget( null );
       renderer.render( scene, camera );
+
+    },
+
+    closeDetail () {
+
+      this.isDetail = false
+      this.activateEventsAndControls()
 
     }
   }
