@@ -1,7 +1,7 @@
 <template>
   <div id="detail">
-    detail
-    <input type="text" @keyup.enter="close">
+    <h1>detail</h1>
+    <h2>{{ cardId }}</h2>
     <button @click="close">x</button>
   </div>
 </template>
@@ -9,6 +9,12 @@
 <script>
 export default {
   name: 'Detail',
+  props: {
+    cardId: {
+      type: [Number,],
+      default: null,
+    }
+  },
   methods: {
     close () {
       this.$emit('close-detail')

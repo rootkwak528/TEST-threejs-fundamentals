@@ -2,6 +2,7 @@
   <div id="container">
     <div v-if="isDetail">
       <Detail
+        :cardId="selectedCardId"
         @close-detail="closeDetail"
       />
     </div>
@@ -44,6 +45,7 @@ export default {
   data () {
     return {
       isDetail: false,
+      selectedCardId: null,
     }
   },
   components: {
@@ -367,6 +369,8 @@ export default {
       document.addEventListener( 'keyup', this.onKeyUp ) // 키보드 up
 
       // 컨트롤러 추가
+      // 매번 실행하는 new ()는 논리적으로는 불필요한 과정이지만,
+      // dragToLook을 true로 바꾸어도, 자동 회전되는 버그를 방지하기 위함
       controls = new FlyControls( camera, renderer.domElement )
       controls.movementSpeed = 1000
       controls.rollSpeed = Math.PI / 5
@@ -498,6 +502,7 @@ export default {
             console.log( pointedCardId )
             // this.exportScene() // 굉장히 비싼 작업
 
+            this.selectedCardId = pointedCardId
             this.isDetail = true
             this.deactivateEventsAndControls()
 
