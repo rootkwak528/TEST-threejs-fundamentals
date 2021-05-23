@@ -25,7 +25,7 @@ let navbarHeight
 const pickingData = []
 
 const pointer = new THREE.Vector2()
-const offset = new THREE.Vector3( 10, 10, 10 )
+// const offset = new THREE.Vector3( 10, 10, 10 )
 
 let pointedCardId = null
 let clicked = false
@@ -90,7 +90,7 @@ export default {
       // 포인터 가르키는 박스에 씌울 하이라이트 박스도 Scene에 추가
       highlightBox = new THREE.Mesh(
 
-        this.getCubeGeometry(),
+        this.getHighlightGeometry(),
         new THREE.MeshLambertMaterial( { color: 0xffff00 }
 
         ) );
@@ -142,7 +142,7 @@ export default {
         }
           
         // geometry 원형
-        let geometry = this.getCubeGeometry()
+        let geometry = this.getPosterGeometry()
 
         // Scene 의 재질에 texture image 적용할 TextureLoader
         const loadManager = new THREE.LoadingManager();
@@ -198,6 +198,7 @@ export default {
           position: position,
           rotation: rotation,
           scale: scale,
+
         };
 
         loadManager.onLoad = () => {
@@ -229,13 +230,21 @@ export default {
 
     },
 
-    getCubeGeometry () {
-
-      const boxWidth = 2;
-      const boxHeight = 3;
-      const boxDepth = 0.02;
+    getCubeGeometry ( boxWidth, boxHeight, boxDepth ) {
 
       return new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
+
+    },
+
+    getPosterGeometry () {
+
+      return this.getCubeGeometry(2, 3, 0.02);
+
+    },
+
+    getHighlightGeometry () {
+
+      return this.getCubeGeometry(2.2, 3.3, 0.001);
 
     },
 
@@ -360,7 +369,7 @@ export default {
 
           highlightBox.position.copy( data.position );
           highlightBox.rotation.copy( data.rotation );
-          highlightBox.scale.copy( data.scale ).add( offset );
+          highlightBox.scale.copy( data.scale );
           highlightBox.visible = true;
 
         } 
