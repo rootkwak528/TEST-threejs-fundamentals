@@ -453,13 +453,13 @@ export default {
 
           if ( shiftDown ) {
 
-            // console.log( 'shift +', pointedCardId )
+            console.log( 'shift +', pointedCardId )
             this.getRecommendations()
 
           } else {
 
-            // console.log( pointedCardId )
-            this.exportScene() // 굉장히 비싼 작업
+            console.log( pointedCardId )
+            // this.exportScene() // 굉장히 비싼 작업
 
           }
 
