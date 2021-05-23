@@ -13,7 +13,6 @@ import results from '@/data/movies'
 import axios from 'axios'
 
 const TMDB_API_KEY = process.env.VUE_APP_TMDB_API_KEY
-console.log(TMDB_API_KEY)
 
 let container
 let camera, controls, scene, renderer
