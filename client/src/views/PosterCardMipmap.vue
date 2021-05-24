@@ -2,7 +2,7 @@
   <div id="container">
     <div v-if="isDetail">
       <Detail
-        :cardId="selectedCardId"
+        :movie="selectedMovie"
         @close-detail="closeDetail"
       />
     </div>
@@ -42,15 +42,26 @@ const clock = new THREE.Clock()
 
 export default {
   name: 'PosterCard',
-  data () {
-    return {
-      isDetail: false,
-      selectedCardId: null,
-    }
-  },
   components: {
     Detail,
   },
+  // props: {
+  //   // Index 페이지에서 전달
+  //   movies: Object,
+  //   movieObject: Object,
+  // },
+
+  data () {
+
+    return {
+      isDetail: false,
+      selectedMovie: null,
+      movieObject: {}, // this is for test
+      movieLength: 0,
+    }
+
+  },
+
   mounted () {
 
     const navbar = document.getElementById( 'nav' )
@@ -96,9 +107,10 @@ export default {
       scene.add( light );
 
       // 영화 데이터 확인
-      const movies = results.results
+      const movies = results.results // this is for test
 
       // 포스터 카드 geometry 추가
+      // this.updateGeometriesToScene( this.movies )
       this.updateGeometriesToScene( movies )
 
       // 포인터 가르키는 박스에 씌울 하이라이트 박스도 Scene에 추가
@@ -202,13 +214,21 @@ export default {
 
       movies.forEach(movie => {
 
+        // 포스터 없으면 continue
         if (!movie.poster_path) {
           return
         }
 
+        // 이미 리스트에 있으면 continue
         if (pickingData[ movie.id ]) {
           return
         }
+
+        // movieObject에 데이터 저장
+        this.movieObject[ movie.id ] = movie
+
+        // movieLength 추가
+        this.movieLength += 1
           
         // geometry 원형
         let geometry = this.getPosterGeometry()
@@ -488,8 +508,6 @@ export default {
 
       if ( clicked ) {
 
-      controls.dragToLook = true
-
         if ( pointedCardId ) {
 
           if ( shiftDown ) {
@@ -502,12 +520,11 @@ export default {
             console.log( pointedCardId )
             // this.exportScene() // 굉장히 비싼 작업
 
-            this.selectedCardId = pointedCardId
+            this.selectedMovie = this.movieObject[ pointedCardId ]
             this.isDetail = true
             this.deactivateEventsAndControls()
 
           }
-
         }
         
         clicked = false

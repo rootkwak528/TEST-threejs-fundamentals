@@ -1,7 +1,9 @@
 <template>
   <div id="detail">
     <h1>detail</h1>
-    <h2>{{ cardId }}</h2>
+    <h2>{{ movie.id }}</h2>
+    <h2>{{ movie.title }}</h2>
+    <p>{{ movie.overview }}</p>
     <button @click="close">x</button>
   </div>
 </template>
@@ -10,8 +12,8 @@
 export default {
   name: 'Detail',
   props: {
-    cardId: {
-      type: [Number,],
+    movie: {
+      type: [Object,],
       default: null,
     }
   },
@@ -19,7 +21,7 @@ export default {
     close () {
       this.$emit('close-detail')
     }
-  }
+  },
 }
 </script>
 
